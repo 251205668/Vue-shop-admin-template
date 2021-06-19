@@ -6,7 +6,7 @@
              alt="">
         <span>后台管理系统</span>
       </div>
-      <el-button type="info"
+      <el-button type="primary"
                  @click="logout"
                  size="default">退出登录</el-button>
 
@@ -17,8 +17,9 @@
              @click="collpaseMenu">| | |</div>
         <el-menu class="el-menu-vertical-demo"
                  background-color="#333744"
+                 :default-active="activePath"
                  :collapse-transition='false'
-                 active-text-color="#3344C2"
+                 active-text-color="#409FFF"
                  :collapse="iscollpase"
                  unique-opened
                  router
@@ -32,9 +33,17 @@
               <span>{{item.authName}}</span>
             </template>
             <!-- 二级菜单 -->
-            <el-menu-item :index="'/'+subitem.path"
-                          v-for="subitem of item.children"
-                          :key="subitem.id">{{subitem.authName}}</el-menu-item>
+            <el-menu-item
+              :index="'/'+subitem.path"
+              v-for="subitem of item.children"
+              :key="subitem.id"
+              @click="saveNavState('/' + subitem.path)"
+              >
+                <template slot="title">
+                  <i class="el-icon-menu"></i>
+                  <span>{{subitem.authName}}</span>
+                </template>
+            </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -60,7 +69,8 @@ export default {
         102: 'bank-card',
         145: 'data-analysis'
       },
-      iscollpase: false
+      iscollpase: false,
+      activePath: ''
     }
   },
 
@@ -80,6 +90,8 @@ export default {
     } else {
       this.menuList = JSON.parse(menulist)
     }
+    // 读取激活菜单
+    this.activePath = localStorage.getItem('active-path')
   },
 
   methods: {
@@ -89,16 +101,24 @@ export default {
       this.$notify({
         title: '成功',
         message: '退出登录成功',
-        type: 'error'
+        type: 'success'
       })
       this.$router.push('/login')
     },
     collpaseMenu() {
       this.iscollpase = !this.iscollpase
+    },
+    saveNavState(path) {
+      localStorage.setItem('active-path', path)
+      this.activePath = path
     }
   },
 
-  watch: {}
+  watch: {
+    activePath(value) {
+      this.$router.push(value)
+    }
+  }
 
 }
 
@@ -145,5 +165,8 @@ export default {
 }
 .el-main {
   background-color: #eaedf1;
+  &::-webkit-scrollbar {
+    display:none
+  }
 }
 </style>

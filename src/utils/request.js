@@ -35,6 +35,34 @@ instance.interceptors.response.use(
   res => {
     if (res.status === 200) {
       Nprogress.done()
+      // 此项目需要做额外处理，code码为meta.status
+      const msg = res.data.meta.msg
+      const code = res.data.meta.status
+      if (code !== 200 || code !== 201) {
+        switch (code) {
+          case 400:
+            Message.warning(msg || '请求参数异常')
+            break
+          case 401:
+          // Vuex更新用户状态，系统跳转登录页面，去除缓存token
+            Message.warning(msg || '请先登录')
+            break
+          case 403:
+            Message.error('权限不足')
+            break
+          case 500:
+            Message.error(msg || '服务器开小差啦')
+            break
+          default:
+            break
+        }
+      }
+      // token失效
+      if (msg === '无效token') {
+        Message.error('token已过期，请重新登录')
+        localStorage.clear()
+        location.reload()
+      }
       return Promise.resolve(res.data)
     } else {
       Message.warning(res.statusText || 'Response error')
