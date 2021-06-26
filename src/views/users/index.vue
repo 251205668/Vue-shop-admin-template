@@ -220,7 +220,6 @@ export default {
       }
     },
     handleDelete(row) {
-      console.log(row.id)
       this.$confirm('此操作会永久删除该用户，是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -240,7 +239,7 @@ export default {
           }
         })
         .catch(() => {
-          this.$message.success('取消成功')
+          this.$message.info('取消成功')
         })
     },
     async handleSelect(row) {
