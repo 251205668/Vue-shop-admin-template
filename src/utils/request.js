@@ -9,7 +9,10 @@ import 'nprogress/nprogress.css'
  * 3. 状态码处理
  */
 const instance = axios.create({
-  baseURL: process.env.NODE_ENV === 'development' ? config.baseURL.dev : config.baseURL.pro,
+  baseURL:
+    process.env.NODE_ENV === 'development'
+      ? config.baseURL.dev
+      : config.baseURL.pro,
   headers: {
     'Content-Type': 'application/json;charset=utf-8'
   },
@@ -44,7 +47,7 @@ instance.interceptors.response.use(
             Message.warning(msg || '请求参数异常')
             break
           case 401:
-          // Vuex更新用户状态，系统跳转登录页面，去除缓存token
+            // Vuex更新用户状态，系统跳转登录页面，去除缓存token
             Message.warning(msg || '请先登录')
             break
           case 403:

@@ -12,60 +12,86 @@
       <el-row :gutter="20">
         <el-col :span="8">
           <el-input
-            placeholder="请输入"
+            placeholder="请输入查询条件"
             v-model="keywords"
             @clear="handleClear"
+            @keyup.enter.native="handleSearch"
             size="normal"
             clearable
-            >
-          <el-button
-            slot="append"
-            @click="handleSearch"
-            icon="el-icon-search"
+          >
+            <el-button
+              slot="append"
+              @click="handleSearch"
+              icon="el-icon-search"
             ></el-button>
           </el-input>
         </el-col>
         <el-col :span="6">
           <el-button
             type="primary"
-            style="height:40px;"
+            style="height: 40px"
             icon="el-icon-edit"
             @click="handleAddUser"
-            >
+          >
             添加用户
-            </el-button>
+          </el-button>
         </el-col>
       </el-row>
       <!-- 数据表格 -->
-        <el-table
-          v-loading="listLoading"
-          :data="list"
-          border
-          fit
-          highlight-current-row
-          style="width: 100%;"
+      <el-table
+        v-loading="listLoading"
+        :data="list"
+        border
+        fit
+        highlight-current-row
+        style="width: 100%"
       >
-        <el-table-column label="序号" prop="id" align="center" type="index"/>
+        <el-table-column
+          sortable
+          prop="id"
+          label="序号"
+          align="center"
+          width="80"
+        >
+        </el-table-column>
         <el-table-column label="用户名" prop="username" align="center">
-        </el-table-column>
-        <el-table-column label="邮箱" prop="email">
-        </el-table-column>
-        <el-table-column label="电话" prop="mobile">
-        </el-table-column>
-        <el-table-column label="状态">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)"></el-switch>
+            <span @click="handleEdit(scope.row)" class="link-type">{{
+              scope.row.username
+            }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
-          <template slot-scope="{row}">
+        <el-table-column label="邮箱" prop="email" align="center">
+        </el-table-column>
+        <el-table-column label="电话" prop="mobile" align="center">
+        </el-table-column>
+        <el-table-column label="创建时间" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.create_time | moment }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" align="center">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.mg_state"
+              @change="userStateChanged(scope.row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          width="260"
+          class-name="small-padding fixed-width"
+        >
+          <template slot-scope="{ row }">
             <el-button type="primary" size="mini" @click="handleEdit(row)">
               编辑
             </el-button>
-            <el-button  type="danger" size="mini" @click="handleDelete(row)">
+            <el-button type="danger" size="mini" @click="handleDelete(row)">
               删除
             </el-button>
-             <el-button type="success" size="mini" @click="handleSelect(row)">
+            <el-button type="success" size="mini" @click="handleSelect(row)">
               角色分配
             </el-button>
           </template>
@@ -73,7 +99,7 @@
       </el-table>
       <el-pagination
         :background="true"
-        :page-sizes="[5,10,20,30]"
+        :page-sizes="[5, 10, 20, 30]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="totals"
@@ -86,34 +112,41 @@
       :showDialog="showUserFormDialog"
       @close="handleClose"
       @addUser="handleAdd"
-      ></user-form>
+    ></user-form>
     <!-- 修改用户弹窗 -->
     <user-edit
       :showEditDialog="showUserEditDialog"
       @close="handleEditClose"
       @editSuccess="handleEditSuccess"
       :userInfo="userInfo"
-      ></user-edit>
+    ></user-edit>
     <!-- 分配角色弹窗 -->
     <user-role
-    :roleList = "roleList"
-    :currentUserInfo="roleUserInfo"
-    @close="handleRoleCLose"
-    :showRoleDialog="showRoleDialog"
-    @selectSuccess="handleSlectSuccess"
+      :roleList="roleList"
+      :currentUserInfo="roleUserInfo"
+      @close="handleRoleCLose"
+      :showRoleDialog="showRoleDialog"
+      @selectSuccess="handleSlectSuccess"
     ></user-role>
   </div>
 </template>
 
 <script>
-import { getUserList, modifyState, getUserInfoById, deleteUserById, getRoles } from '@/api/user'
+import {
+  getUserList,
+  modifyState,
+  getUserInfoById,
+  deleteUserById,
+  getRoles
+} from '@/api/user'
 import UserForm from '@/components/Dialog/userForm.vue'
 import UserEdit from '@/components/Dialog/userEditFrom.vue'
 import UserRole from '@/components/Dialog/userRole'
+import moment from 'moment'
 export default {
   name: '',
   props: {},
-  data () {
+  data() {
     return {
       keywords: '',
       listLoading: false,
@@ -134,6 +167,16 @@ export default {
     UserForm,
     UserEdit,
     UserRole
+  },
+  filters: {
+    moment(date) {
+      // 两显示为几天前
+      if (moment(date).isBefore(moment().subtract(7, 'days'))) {
+        return moment.unix(date).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return moment(date).fromNow()
+      }
+    }
   },
   created() {},
 
@@ -178,27 +221,27 @@ export default {
     },
     handleDelete(row) {
       console.log(row.id)
-      this.$confirm('此操作会永久删除该用户，是否继续？', '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(async () => {
-        const res = await deleteUserById(row.id)
-        if (res.meta.status === 200) {
-          this.$notify({
-            title: '成功',
-            message: '删除用户成功',
-            type: 'success'
-          })
-          this.initData()
-        } else {
-          this.$message.error('操作失败')
-        }
-      }).catch(() => {
-        this.$message.success('取消成功')
+      this.$confirm('此操作会永久删除该用户，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(async () => {
+          const res = await deleteUserById(row.id)
+          if (res.meta.status === 200) {
+            this.$notify({
+              title: '成功',
+              message: '删除用户成功',
+              type: 'success'
+            })
+            this.initData()
+          } else {
+            this.$message.error('操作失败')
+          }
+        })
+        .catch(() => {
+          this.$message.success('取消成功')
+        })
     },
     async handleSelect(row) {
       const res = await getRoles()
@@ -258,10 +301,6 @@ export default {
   },
 
   watch: {}
-
 }
-
 </script>
-<style lang='scss' scoped>
-
-</style>
+<style lang="scss" scoped></style>

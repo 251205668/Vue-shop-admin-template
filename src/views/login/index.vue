@@ -2,36 +2,39 @@
   <div class="login-wrapper">
     <div class="login-box">
       <div class="img-box">
-        <img src="@/assets/logo.png"
-             alt="">
+        <img src="@/assets/logo.png" alt="" />
       </div>
       <div class="form-box">
-        <el-form :model="loginForm"
-                 ref="loginForm"
-                 :rules="loginFormRules"
-                 label-width="80px"
-                 :inline="false"
-                 size="medium">
-          <el-form-item label="账号"
-                        prop="username">
-            <el-input clearable
-                      prefix-icon="el-icon-user"
-                      v-model="loginForm.username"></el-input>
+        <el-form
+          :model="loginForm"
+          ref="loginForm"
+          :rules="loginFormRules"
+          label-width="80px"
+          :inline="false"
+          size="medium"
+        >
+          <el-form-item label="账号" prop="username">
+            <el-input
+              clearable
+              prefix-icon="el-icon-user"
+              @keyup.enter.native="onSubmit"
+              v-model="loginForm.username"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="密码"
-                        prop="password">
-            <el-input clearable
-                      show-password
-                      prefix-icon="el-icon-lock"
-                      v-model="loginForm.password"></el-input>
+          <el-form-item label="密码" prop="password">
+            <el-input
+              clearable
+              show-password
+              prefix-icon="el-icon-lock"
+              @keyup.enter.native="onSubmit"
+              v-model="loginForm.password"
+            ></el-input>
           </el-form-item>
           <el-form-item class="btns">
-            <el-button type="primary"
-                       @click="onSubmit">登录</el-button>
+            <el-button type="primary" @click="onSubmit">登录</el-button>
             <el-button @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
-
       </div>
     </div>
   </div>
@@ -42,7 +45,7 @@ import { userLogin } from '@/api/user'
 export default {
   name: '',
   props: {},
-  data () {
+  data() {
     return {
       loginForm: {
         username: 'admin',
@@ -74,7 +77,6 @@ export default {
             trigger: 'blur'
           }
         ]
-
       }
     }
   },
@@ -90,7 +92,7 @@ export default {
 
   methods: {
     onSubmit() {
-      this.$refs.loginForm.validate(async (valid) => {
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
           const res = await userLogin(this.loginForm)
           if (res.meta.status === 200) {
@@ -116,11 +118,11 @@ export default {
   watch: {}
 }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .login-wrapper {
   width: 100%;
   height: 100%;
-  background: #2B4B6B;
+  background: #2b4b6b;
   .login-box {
     width: 450px;
     height: 360px;
@@ -129,7 +131,7 @@ export default {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     .img-box {
       width: 130px;
       height: 130px;
@@ -139,13 +141,13 @@ export default {
       box-shadow: 0 0 10px #ddd;
       position: absolute;
       left: 50%;
-      transform: translate(-50%,-50%);
+      transform: translate(-50%, -50%);
       background: #ffffff;
       img {
         width: 100%;
         height: 100%;
         border-radius: 50%;
-        background: #eee
+        background: #eee;
       }
     }
     .form-box {

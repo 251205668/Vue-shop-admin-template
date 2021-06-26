@@ -16,6 +16,9 @@
         style="width:100%"
       >
         <el-table-column
+          type="expand"
+        />
+        <el-table-column
           label="序号"
           prop="id"
           align="center"
