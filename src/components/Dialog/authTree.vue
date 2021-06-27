@@ -18,18 +18,19 @@
       :default-checked-keys="defKeys"
     ></el-tree>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">取 消</el-button>
+      <el-button type="danger" @click="handleClose">取 消</el-button>
       <el-button type="primary" @click="handleSubmit">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
+import { getAuthTree, modifyRoleAuth } from '@/api/role'
 export default {
   name: '',
   props: {
     showDialog: Boolean,
-    treeData: Array
+    role: Object
   },
   data() {
     return {
@@ -60,12 +61,48 @@ export default {
   methods: {
     handleClose() {
       this.setRightDialogVisible = false
+      // 关闭时清空默认选中数据
+      this.defKeys = []
+      this.$emit('close', this.setRightDialogVisible)
     },
-    handleSubmit() {}
+    async handleSubmit() {
+      // 获取当前选中和班选中的key数组
+      const keys = [
+        ...this.$refs.treeRef.getCheckedKeys(),
+        ...this.$refs.treeRef.getHalfCheckedKeys()
+      ]
+      const res = await modifyRoleAuth(this.role.id, keys.join(','))
+      if (res.meta.status === 200) {
+        this.$notify({
+          title: '成功',
+          message: '分配角色权限成功',
+          type: 'success'
+        })
+        this.$emit('selectSuccess')
+        this.setRightDialogVisible = false
+      } else {
+        this.$message.error('操作失败')
+      }
+    },
+    getDefIds(node, arr) {
+      if (!node.children) {
+        return arr.push(node.id)
+      }
+      node.children.forEach((item) => this.getDefIds(item, arr))
+    }
   },
   watch: {
-    showDialog(value) {
+    async showDialog(value) {
       this.setRightDialogVisible = value
+      if (value && this.role) {
+        const res = await getAuthTree()
+        if (res.meta.status === 200) {
+          this.rightsList = res.data
+          // 递归取出匹配该角色的权限id数组
+          this.getDefIds(this.role, this.defKeys)
+          console.log(this.rightsList, this.role, this.defKeys)
+        }
+      }
     }
   }
 }

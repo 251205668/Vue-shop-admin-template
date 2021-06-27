@@ -1,29 +1,34 @@
 <template>
-  <el-dialog title="编辑用户" :visible.sync="addDialogVisible" width="46%" @close="handleCloseDialog">
-      <!-- 内容主体 -->
-      <el-form
-        :model="editUserForm"
-        ref="editUserFormRef"
-        size="medium"
-        :inline="false"
-        :rules="editUserFormRules"
-        label-width="100px"
-      >
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="editUserForm.username" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="editUserForm.email"></el-input>
-        </el-form-item>
-        <el-form-item label="手机" prop="mobile">
-          <el-input v-model="editUserForm.mobile"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="handleCloseDialog">取 消</el-button>
-        <el-button type="primary" @click="handleEdit">确 定</el-button>
-      </span>
-    </el-dialog>
+  <el-dialog
+    title="编辑用户"
+    :visible.sync="addDialogVisible"
+    width="46%"
+    @close="handleCloseDialog"
+  >
+    <!-- 内容主体 -->
+    <el-form
+      :model="editUserForm"
+      ref="editUserFormRef"
+      size="medium"
+      :inline="false"
+      :rules="editUserFormRules"
+      label-width="100px"
+    >
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="editUserForm.username" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="editUserForm.email"></el-input>
+      </el-form-item>
+      <el-form-item label="手机" prop="mobile">
+        <el-input v-model="editUserForm.mobile"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="handleCloseDialog">取 消</el-button>
+      <el-button type="primary" @click="handleEdit">确 定</el-button>
+    </span>
+  </el-dialog>
 </template>
 
 <script>
@@ -34,7 +39,7 @@ export default {
     showEditDialog: Boolean,
     userInfo: Object
   },
-  data () {
+  data() {
     return {
       addDialogVisible: false,
       editUserForm: {},
@@ -82,7 +87,7 @@ export default {
       this.$emit('close', this.addDialogVisible)
     },
     handleEdit() {
-      this.$refs.editUserFormRef.validate(async valid => {
+      this.$refs.editUserFormRef.validate(async (valid) => {
         if (valid) {
           const res = await editUser(this.editUserForm)
           if (res.meta.status === 200) {
@@ -113,10 +118,7 @@ export default {
       this.addDialogVisible = true
     }
   }
-
 }
-
 </script>
 <style lang='scss' scoped>
-
 </style>

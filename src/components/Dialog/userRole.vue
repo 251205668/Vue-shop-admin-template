@@ -1,39 +1,44 @@
 <template>
- <el-dialog title="分配角色" :visible.sync="roleDialogVisible" width="46%" @close="handleClose">
-      <!-- 内容主体 -->
-      <el-row :gutter="10">
-        <el-col :span="4" :offset="0">当前用户:</el-col>
-        <el-col :span="12" :offset="0">{{currentUserInfo.username}}</el-col>
-      </el-row>
-      <el-row :gutter="10" style="marginTop:20px">
-        <el-col :span="4" :offset="0">当前角色:</el-col>
-        <el-col :span="12" :offset="0">{{currentUserInfo.role_name}}</el-col>
-      </el-row>
-      <el-row :gutter="10" style="marginTop:20px">
-        <el-col :span="4" :offset="0">分配角色:</el-col>
-        <el-col :span="12" :offset="0">
-          <el-select
-            v-model="selectRoleId"
-            filterable
-            allow-create
-            default-first-option
-            placeholder="请选择用户角色"
-          >
-            <el-option
-              v-for="item in roleList"
-              :key="item.id"
-              :label="item.roleName"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-col>
-      </el-row>
+  <el-dialog
+    title="分配角色"
+    :visible.sync="roleDialogVisible"
+    width="46%"
+    @close="handleClose"
+  >
+    <!-- 内容主体 -->
+    <el-row :gutter="10">
+      <el-col :span="4" :offset="0">当前用户:</el-col>
+      <el-col :span="12" :offset="0">{{ currentUserInfo.username }}</el-col>
+    </el-row>
+    <el-row :gutter="10" style="margintop: 20px">
+      <el-col :span="4" :offset="0">当前角色:</el-col>
+      <el-col :span="12" :offset="0">{{ currentUserInfo.role_name }}</el-col>
+    </el-row>
+    <el-row :gutter="10" style="margintop: 20px">
+      <el-col :span="4" :offset="0">分配角色:</el-col>
+      <el-col :span="12" :offset="0">
+        <el-select
+          v-model="selectRoleId"
+          filterable
+          allow-create
+          default-first-option
+          placeholder="请选择用户角色"
+        >
+          <el-option
+            v-for="item in roleList"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+      </el-col>
+    </el-row>
 
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="selectRole">确 定</el-button>
-      </span>
-    </el-dialog>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="handleClose">取 消</el-button>
+      <el-button type="primary" @click="selectRole">确 定</el-button>
+    </span>
+  </el-dialog>
 </template>
 
 <script>
@@ -45,7 +50,7 @@ export default {
     currentUserInfo: Object,
     showRoleDialog: Boolean
   },
-  data () {
+  data() {
     return {
       roleDialogVisible: false,
       userInfo: {},
@@ -92,9 +97,7 @@ export default {
       this.roleDialogVisible = value
     }
   }
-
 }
-
 </script>
 <style lang='scss' scoped>
 </style>
